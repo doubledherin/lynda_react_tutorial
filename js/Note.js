@@ -2,6 +2,16 @@ var Note = React.createClass({
     getInitialState: function() {
         return {editing: false}
     },
+    componentWillMount: function() {
+        this.style = {
+            right: this.randomBetween(0, window.innerWidth - 150) + 'px',
+            top: this.randomBetween(0, window.innerHeight - 150) + 'px',
+            transform: 'rotate(' + this.randomBetween(-15, 15) + 'deg)'
+        };
+    },
+    randomBetween: function(min, max) {
+        return(min + Math.ceil(Math.random() * max));
+    },
     edit: function() {
         this.setState({editing: true});
     },
@@ -14,7 +24,7 @@ var Note = React.createClass({
     },
     renderDisplay: function() {
         return (
-            <div className="note">
+            <div className="note" style={this.style}>
                 <p>{this.props.children}</p>
                 <span>
                     <button onClick={this.edit}
@@ -27,12 +37,11 @@ var Note = React.createClass({
     },
     renderForm: function() {
         return (
-            <div className="note">
-            <textarea ref="newText" defaultValue={this.props.children} 
-            className="form-control"></textarea>
-            <button onClick={this.save} className="btn btn-success btn-sm glyphicon glyphicon-floppy-disk" />
+            <div className="note" style={this.style}>
+                <textarea ref="newText" defaultValue={this.props.children} className="form-control"></textarea>
+                <button onClick={this.save} className="btn btn-success btn-sm glyphicon glyphicon-floppy-disk" />
             </div>
-            )
+            );
     },
     render: function() {
         if (this.state.editing) {
@@ -45,7 +54,7 @@ var Note = React.createClass({
 });
 
 var Board = React.createClass({
-    propTypes: {
+    propTypes : {
         count: function(props, propName) {
             if (typeof props[propName] !== "number"){
                 return new Error('The count property must be a number');
@@ -58,12 +67,13 @@ var Board = React.createClass({
     getInitialState: function() {
         return {
             notes: [
-                'Call Bill',
-                'Email Lisa',
-                'Make dentist appt',
-                'Send Proposal'
             ]
         };
+    },
+    add: function(text) {
+        var arr = this.state.notes;
+        arr.push(text);
+        this.setState({notes: arr});
     },
     update: function(newText, i) {
         var arr = this.state.notes;
@@ -86,7 +96,8 @@ var Board = React.createClass({
     },
     render: function() {
         return (<div className="board">
-                    {this.state.notes.map(this.eachNote)}
+                {this.state.notes.map(this.eachNote)}
+                <button className="btn btn-sm btn-success glyphicon glyphicon-plus" onClick={this.add.bind(null, "New Note")}/>
             </div>
 
         );
