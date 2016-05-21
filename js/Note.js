@@ -70,14 +70,21 @@ var Board = React.createClass({
             ]
         };
     },
+    nextId: function() {
+        this.uniqueId = this.uniqueId || 0;
+        return this.uniqueId++;
+    },
     add: function(text) {
         var arr = this.state.notes;
-        arr.push(text);
+        arr.push({
+            id: this.nextId(),
+            note: text
+        });
         this.setState({notes: arr});
     },
     update: function(newText, i) {
         var arr = this.state.notes;
-        arr[i] = newText;
+        arr[i].note = newText;
         this.setState({notes:arr});
     },
     remove: function(i) {
@@ -87,11 +94,11 @@ var Board = React.createClass({
     },
     eachNote: function(note, i) {
         return (
-                <Note key={i}
+                <Note key={note.id}
                     index={i}
                     onChange={this.update}
                     onRemove={this.remove}
-                >{note}</Note>
+                >{note.note}</Note>
             );
     },
     render: function() {
